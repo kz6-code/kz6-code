@@ -15,21 +15,27 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-		margin-top: 50px;
+        	margin-top: 50px;
+          border-radius: 5px;
+          border-width: 5px;
+          border-color: white;
       }
       #score {
         text-align: center;
         font-size: 140px;
 		margin-bottom: 50px;
       }
+      body{
+        
+      }
     </style>
   </body>
 
   <script>
-    var board_border = 'black';
-    var board_background = "white";
-    var snake_col = 'lightblue';
-    var snake_border = 'darkblue';
+    var board_border = 'white';
+    var board_background = "black";
+    var snake_col = 'red';
+    var snake_border = 'white';
     
     let snake = [
       {x: 200, y: 200},
@@ -45,7 +51,7 @@
     let food_y;
     let dx = 10;
     let dy = 0;
-    
+    var set_speed =95;
     
     
 
@@ -69,7 +75,7 @@
         drawSnake();
         main();
 		
-      }, 100)
+      }, set_speed)
     }
     
     function reload(){
@@ -119,9 +125,6 @@
       return hitLeftWall || hitRightWall || hitToptWall || hitBottomWall 
 	}
 
-  if (has_game_ended(true)){
-    document.location.reload(true);
-  }
 
     function random_food(min, max) {
       return Math.round((Math.random() * (max-min) + min) / 10) * 10;
@@ -130,9 +133,12 @@
     function gen_food() {
       food_x = random_food(0, snakeboard.width - 10);
       food_y = random_food(0, snakeboard.height - 10);
+      var set_speed = set_speed+10;
+      console.log(set_speed);
       snake.forEach(function has_snake_eaten_food(part) {
         var has_eaten = part.x == food_x && part.y == food_y;
-        if (has_eaten) gen_food();
+        if (has_eaten) gen_food()
+        ;
       });
     }
 
