@@ -6,8 +6,8 @@
 
   <body>
 
-    <div id="score">0</div>
-    <canvas id="snakeboard" width="400" height="400"></canvas>
+    <div id="score" style="color: white;">0</div>
+    <canvas  style="border-width: 5px;" id="snakeboard" width="400" height="400"></canvas>
 
     <style>
       #snakeboard {
@@ -16,9 +16,8 @@
         left: 50%;
         transform: translate(-50%, -50%);
         	margin-top: 50px;
-          border-radius: 5px;
-          border-width: 100px;
-          border-color: yellow;
+          border: white;
+          border-style:solid ;
       }
       #score {
         text-align: center;
@@ -26,14 +25,16 @@
 		margin-bottom: 50px;
       }
 
+      body{background-color: black;}
+
     </style>
   </body>
 
   <script>
-    var board_border = 'white';
+    var board_border = 'green';
     var board_background = "black";
     var snake_col = 'red';
-    var snake_border = 'white';
+    var snake_border = 'green';
     
     let snake = [
       {x: 200, y: 200},
@@ -57,6 +58,11 @@
 
     var snakeboard = document.getElementById("snakeboard");
     var snakeboard_ctx = snakeboard.getContext("2d");
+
+    function restart(){
+      snake.x= 200;
+      snake.y= 200;
+    }
 
     main();
 
