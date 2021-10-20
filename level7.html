@@ -5,7 +5,7 @@
 
   <body>
 
-    <div style="color: white;" id="holder"><label id="real">Score:</label><label id="score">0</label><br><label id="level">Level 6</label></div>
+    <div style="color: white;" id="holder"><label id="real">Score:</label><label id="score">0</label><br><label id="level">Level 7</label></div>
 
     <canvas  style="border-width: 5px;" id="snakeboard" width="400" height="400"></canvas>
 
@@ -180,7 +180,9 @@
             "score"
           ).innerHTML =  score;
           obstacles = [];
+          for (let i = 0; i < score; i++) {
             gen_obstacle();
+          }
           gen_apple();
         }
         
@@ -266,7 +268,7 @@
         
           setTimeout(function t() {
             if (score === 10){
-          location = ("level7.html")
+          location = ("winner.html")
         }
             clear();
             draw_object("green", apple, new Pos(10, 10));
