@@ -6,7 +6,8 @@
 
   <body>
 
-    <div id="score" style="color: white;">0</div>
+    <div style="color: white;" id="holder"><label id="real">Score:</label><label id="score">0</label><br><label id="level">Level 1</label></div>
+
     <canvas  style="border-width: 5px;" id="snakeboard" width="400" height="400"></canvas>
 
     <style>
@@ -21,14 +22,33 @@
       }
       #score {
         text-align: center;
-        font-size: 140px;
+        font-size: 100px;
 		margin-bottom: 50px;
+      }
+
+      #holder {
+        text-align: center;
+		   margin-bottom: 50px;
+      }
+
+      #level {
+        text-align: center;
+        font-size: 25px;
+		margin-bottom: 50px;
+      }
+
+      #real {
+        text-align: center;
+        font-size: 100px;
+		margin-bottom: 50px;
+    margin-left: 10px;
       }
 
       body{background-color: black;}
 
     </style>
   </body>
+
 
   <script>
     var board_border = 'green';
@@ -48,25 +68,19 @@
     let changing_direction = false;
     let food_x;
     let food_y;
-    let object_x;
-    let object_y;
     let dx = 10;
     let dy = 0;
-    var set_speed =95;
+    let set_speed = 200;
     
     
 
     var snakeboard = document.getElementById("snakeboard");
     var snakeboard_ctx = snakeboard.getContext("2d");
 
-    function restart(){
-      snake.x= 200;
-      snake.y= 200;
-    }
-
     main();
 
     gen_food();
+
 
     document.addEventListener("keydown", change_direction);
     
@@ -74,18 +88,19 @@
         if (has_game_ended()) return clear_board(), reload();
 
         changing_direction = false;
+        if (score === 10){
+          location = ("level2.html")
+        }
         setTimeout(function onTick() {
         clear_board();
         drawFood();
         move_snake();
         drawSnake();
-        object();
+        score_check();
         main();
-		
       }, set_speed)
     }
 
-    
     
     function reload(){
       location.reload();
@@ -114,14 +129,6 @@
     }
 
     
-    function object() {
-      snakeboard_ctx.fillStyle = 'lightbrown';
-      snakeboard_ctx.strokestyle = 'brown'
-      snakeboard_ctx.fillRect(object_x, object_y, 20, 20);
-      snakeboard_ctx.strokeRect(object_x, object_y, 20, 20);
-    }
-
-    
     
 
     function drawSnakePart(snakePart) {
@@ -141,7 +148,7 @@
       var hitToptWall = snake[0].y < 0;
       var hitBottomWall = snake[0].y > snakeboard.height - 10;
       
-      return hitLeftWall || hitRightWall || hitToptWall || hitBottomWall 
+      return hitLeftWall || hitRightWall || hitToptWall || hitBottomWall
 	}
 
 
@@ -149,28 +156,14 @@
       return Math.round((Math.random() * (max-min) + min) / 10) * 10;
     }
 
-    function random_object(min, max) {
-      return Math.round((Math.random() * (max-min) + min) / 10) * 10;
-    }
 
     function gen_food() {
       food_x = random_food(0, snakeboard.width - 10);
       food_y = random_food(0, snakeboard.height - 10);
-      var set_speed = set_speed+10;
       console.log(set_speed);
       snake.forEach(function has_snake_eaten_food(part) {
         var has_eaten = part.x == food_x && part.y == food_y;
         if (has_eaten) gen_food()
-        ;
-      });
-    }
-    function gen_object() {
-      object_x = random_object(0, snakeboard.width - 10);
-      object_y = random_object(0, snakeboard.height - 10);
-      console.log(set_speed);
-      snake.forEach(function has_snake_eaten_object(part) {
-        var has_touched = part.x == object_x && part.y == object_y;
-        if (has_touched) reload()
         ;
       });
     }
@@ -186,7 +179,7 @@
 
     function level2(){
       if (score_10 === 'true'){
-        window.location("level2.html")
+        location = ("level2.html");
       }
     }
 
@@ -252,10 +245,11 @@
       if (has_eaten_food) {
 
         score += 1;
+  
 
         document.getElementById('score').innerHTML = score;
         gen_food();
-        object();
+        set_speed = set_speed-10;
       } else {
 
         snake.pop();

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<title>Snake Game</title>
+  </head>
+
+  <body>
+
+    <div style="color: white;" id="holder"><label id="real">Score:</label><label id="score">0</label><br><label id="level">Level 2</label></div>
+
+    <canvas  style="border-width: 5px;" id="snakeboard" width="400" height="400"></canvas>
+
+    <style>
+      #snakeboard {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        	margin-top: 50px;
+          border: white;
+          border-style:solid ;
+      }
+      #score {
+        text-align: center;
+        font-size: 100px;
+		margin-bottom: 50px;
+      }
+
+      #holder {
+        text-align: center;
+		   margin-bottom: 50px;
+      }
+
+      #level {
+        text-align: center;
+        font-size: 25px;
+		margin-bottom: 50px;
+      }
+
+      #real {
+        text-align: center;
+        font-size: 100px;
+		margin-bottom: 50px;
+    margin-left: 10px;
+      }
+
+      body{background-color: black;}
+
+    </style>
+  </body>
+
+  <script>
+    var board_border = 'green';
+    var board_background = "black";
+    var snake_col = 'red';
+    var snake_border = 'green';
+    
+    let snake = [
+      {x: 200, y: 200},
+      {x: 190, y: 200},
+      {x: 180, y: 200},
+      {x: 170, y: 200},
+      {x: 160, y: 200}
+    ]
+
+    let score = 0;
+    let changing_direction = false;
+    let food_x;
+    let food_y;
+    let object_x;
+    let object_y;
+    let dx = 10;
+    let dy = 0;
+    let set_speed = 170;
+    
+    
+
+    var snakeboard = document.getElementById("snakeboard");
+    var snakeboard_ctx = snakeboard.getContext("2d");
+
+    main();
+
+    gen_food();
+
+    object();
+
+    document.addEventListener("keydown", change_direction);
+    
+    function main() {
+        if (has_game_ended()) return reload(), location = ("index.html");
+        changing_direction = false;
+        if (score === 10){
+          location = ("level3.html")
+        }
+        setTimeout(function onTick() {
+        clear_board();
+        drawFood();
+        draw_object();
+        move_snake();
+        drawSnake();
+        score_check();
+        main();
+      }, set_speed)
+    }
+
+
+    function reload(){
+      location.reload();
+    }
+
+    function clear_board() {
+      
+      snakeboard_ctx.fillStyle = board_background;
+      
+      snakeboard_ctx.strokestyle = board_border;
+      
+      snakeboard_ctx.fillRect(0, 0, snakeboard.width, snakeboard.height);
+      
+      snakeboard_ctx.strokeRect(0, 0, snakeboard.width, snakeboard.height);
+    }
+    
+    function drawSnake() {
+      snake.forEach(drawSnakePart)
+    }
+
+    function drawFood() {
+      snakeboard_ctx.fillStyle = 'lightgreen';
+      snakeboard_ctx.strokestyle = 'darkgreen';
+      snakeboard_ctx.fillRect(food_x, food_y, 10, 10);
+      snakeboard_ctx.strokeRect(food_x, food_y, 10, 10);
+      draw_object();
+    }
+
+    
+    function draw_object() {
+      snakeboard_ctx.fillStyle = 'blue';
+      snakeboard_ctx.strokestyle = 'blue';
+      snakeboard_ctx.fillRect(object_x, object_y, 10, 10);
+      snakeboard_ctx.strokeRect(object_x, object_y, 10, 10);
+    }
+
+    
+    
+
+    function drawSnakePart(snakePart) {
+
+      snakeboard_ctx.fillStyle = snake_col;
+      snakeboard_ctx.strokestyle = snake_border;
+      snakeboard_ctx.fillRect(snakePart.x, snakePart.y, 10, 10);
+      snakeboard_ctx.strokeRect(snakePart.x, snakePart.y, 10, 10);
+    }
+
+    function has_game_ended() {
+      for (let i = 4; i < snake.length; i++) {
+        if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) return true
+      }
+      var hitLeftWall = snake[0].x < 0;
+      var hitRightWall = snake[0].x > snakeboard.width - 10;
+      var hitToptWall = snake[0].y < 0;
+      var hitBottomWall = snake[0].y > snakeboard.height - 10;
+
+      return hitLeftWall || hitRightWall || hitToptWall || hitBottomWall
+	}
+  if (has_game_ended()){
+    back_1();
+  }
+  function back_1(){
+      window.location("index.html");
+    }
+
+    function random_food(min, max) {
+      return Math.round((Math.random() * (max-min) + min) / 10) * 10;
+    }
+
+    function random_object(min, max) {
+      return Math.round((Math.random() * (max-min) + min) / 10) * 10;
+    }
+
+    function gen_food() {
+      food_x = random_food(0, snakeboard.width - 10);
+      food_y = random_food(0, snakeboard.height - 10);
+      console.log(set_speed);
+      snake.forEach(function has_snake_eaten_food(part) {
+        var has_eaten = part.x == food_x && part.y == food_y;
+        if (has_eaten) gen_food()
+        ;
+      });
+    }
+    function object() {
+      object_x = random_object(0, snakeboard.width - 10);
+      object_y = random_object(0, snakeboard.height - 10);
+      snake.forEach(function has_snake_eaten_object(part) {
+        const has_eaten = part.x == object_x && part.y == object_y;
+        if (has_eaten) back_1();
+      });
+    }
+
+    function score_check(){
+      var score_20='';
+      if (score === 20) {
+        score_20 === 'true';
+      }else
+      score_20 === '';
+      }
+
+    function change_direction(event) {
+      var LEFT_KEY = 37;
+      var RIGHT_KEY = 39;
+      var UP_KEY = 38;
+      var DOWN_KEY = 40;
+      
+
+    
+      if (changing_direction) return;
+      changing_direction = true;
+      var keyPressed = event.keyCode;
+      var goingUp = dy === -10;
+      var goingDown = dy === 10;
+      var goingRight = dx === 10;
+      var goingLeft = dx === -10;
+      var a_key = 65;
+      var d_key = 68;
+      var w_key = 87;
+      var s_key = 83;
+      if (keyPressed === LEFT_KEY && !goingRight) {
+        dx = -10;
+        dy = 0;
+      }
+      if (keyPressed === UP_KEY && !goingDown) {
+        dx = 0;
+        dy = -10;
+      }
+      if (keyPressed === RIGHT_KEY && !goingLeft) {
+        dx = 10;
+        dy = 0;
+      }
+      if (keyPressed === DOWN_KEY && !goingUp) {
+        dx = 0;
+        dy = 10;
+      }
+      if (keyPressed === a_key && !goingRight) {
+        dx = -10;
+        dy = 0;
+      }
+      if (keyPressed === w_key && !goingDown) {
+        dx = 0;
+        dy = -10;
+      }
+      if (keyPressed === d_key && !goingLeft) {
+        dx = 10;
+        dy = 0;
+      }
+      if (keyPressed === s_key && !goingUp) {
+        dx = 0;
+        dy = 10;
+      }
+    }
+
+
+    function move_snake() {
+
+      var head = {x: snake[0].x + dx, y: snake[0].y + dy};
+      snake.unshift(head);
+      var has_eaten_food = snake[0].x === food_x && snake[0].y === food_y;
+      if (has_eaten_food) {
+
+        score += 1;
+
+        document.getElementById('score').innerHTML = score;
+        gen_food();
+        object();
+        set_speed = set_speed-10;
+
+      } else {
+
+        snake.pop();
+        var has_eaten_objeect = snake[0].x === object_x && snake[0].y === object_y;
+      if (has_eaten_objeect) {
+        location = ("index.html")
+      }
+        
+      }
+    }
+
+  </script>
+</html>
